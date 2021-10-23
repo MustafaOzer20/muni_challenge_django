@@ -46,7 +46,7 @@ def getFilter(kind, name, user=None):
     return queryset
 
 class BookViewset(viewsets.ModelViewSet):
-    #queryset = Book.objects.all()
+    queryset = Book.objects.all()
     serializer_class = BookSerializer
     def list(self, request):
         queryset = Book.objects.all()
