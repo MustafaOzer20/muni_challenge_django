@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BookViewset, CommentViewset
+from .views import BookViewset, CommentViewset, FavoriteViewset, ListAuthor, ListCategory, ListPublisher
 
 
 urlpatterns = [
@@ -15,7 +15,17 @@ urlpatterns = [
     path('updateBook/<int:pk>', BookViewset.as_view({'put': 'update'})),
     path('deleteBook/<int:pk>', BookViewset.as_view({'delete': 'destroy'})),
 
-    #comment
+    # comment
     path('book/<int:bookId>/addComment', CommentViewset.as_view({'post': 'create'})),
     path('comment/delete/<int:pk>', CommentViewset.as_view({'delete': 'destroy'})),
+
+    # favorite
+    path('favorite/list', FavoriteViewset.as_view({'get': 'list'})),
+    path('favorite/<int:bookId>/addBook', FavoriteViewset.as_view({'post': 'create'})),
+    path('favorite/<int:bookId>/deleteBook', FavoriteViewset.as_view({'delete': 'destroy'})),
+
+    # categories
+    path('author/list', ListAuthor.as_view()),
+    path('publisher/list', ListPublisher.as_view()),
+    path('category/list', ListCategory.as_view()),
 ]

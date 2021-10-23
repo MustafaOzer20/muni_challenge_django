@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.base import Model
 
 # Create your models here.
 class Author(models.Model):
@@ -34,3 +35,7 @@ class Comment(models.Model):
     book = models.ForeignKey('book.Book', on_delete=models.CASCADE, null=True, verbose_name="Book", related_name="comments")
     comment = models.CharField(max_length=500)
     created_date = models.DateTimeField(auto_now_add=True)
+
+class Favorite(models.Model):
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, null=True)
+    book = models.ForeignKey('book.Book', on_delete=models.CASCADE, null=True)

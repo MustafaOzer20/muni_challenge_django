@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from book.models import Author, Publisher, Category, Comment, Book
+from book.models import Author, Favorite, Publisher, Category, Comment, Book
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,4 +32,9 @@ class BookSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
+        fields = ('__all__')
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
         fields = ('__all__')

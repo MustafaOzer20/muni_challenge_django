@@ -1,6 +1,7 @@
 from rest_framework import viewsets
-from book.models import Comment, Book
-from book.serializers import BookSerializer, CommentSerializer
+from rest_framework.views import APIView
+from book.models import Author, Category, Comment, Book, Favorite, Publisher
+from book.serializers import BookSerializer, CommentSerializer, FavoriteSerializer
 from django.shortcuts import get_object_or_404, render
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed,PermissionDenied
@@ -150,3 +151,48 @@ class CommentViewset(viewsets.ModelViewSet):
             "messages":"success"
         })
 
+class FavoriteViewset(viewsets.ModelViewSet):
+    serializer_class = FavoriteSerializer
+
+    def list(self, request):
+        user = getUser(request)
+        queryset = Favorite.objects.filter(user=user)
+        serializer = FavoriteSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, bookId=None):
+        user = getUser(request)
+        book = get_object_or_404(Book, id=bookId)
+        request.data['user'] = user.id
+        request.data['book'] = bookId
+        serializer = FavoriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+    def destroy(self, request, bookId=None):
+        user = getUser(request)
+        favorite_book = get_object_or_404(Favorite, id=bookId)
+        if user.id != favorite_book.user.id:
+            raise PermissionDenied("You are not allowed to do this action!")
+        favorite_book.delete()
+        return Response({
+            "messages":"success"
+        })
+
+
+
+class ListAuthor(APIView):
+    def get(self, request):
+        authors = [author.full_name for author in Author.objects.all()]
+        return Response(authors)
+
+class ListPublisher(APIView):
+    def get(self, request):
+        publishers = [publisher.name for publisher in Publisher.objects.all()]
+        return Response(publishers)
+
+class ListCategory(APIView):
+    def get(self, request):
+        categories = [category.name for category in Category.objects.all()]
+        return Response(categories)
